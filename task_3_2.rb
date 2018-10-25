@@ -1,26 +1,32 @@
+array = []
+
 puts 'a ='
-a = gets.chomp.to_f
+array << gets.chomp.to_f
 
 puts 'b ='
-b = gets.chomp.to_f
+array << gets.chomp.to_f
 
 puts 'c ='
-c = gets.chomp.to_f
+array << gets.chomp.to_f
 
-array = [a,b,c].sort
+array = array.sort!
 
-if array[2]**2 == array[0]**2 + array[1]**2
+f_rectangular = array[2]**2 == array[0]**2 + array[1]**2
+f_isosceles = ( array[0] == array[1] && array[1] != array[2] ) || ( array[0] != array[1] && array[1] == array[2] )
+f_equiteral = array[0] == array[1] && array[1] == array[2]
 
-  if array[0] == array[1]
-    puts 'Rectangular and equilateral!'
-  else
+if f_rectangular && f_isosceles
+  puts 'Rectangular and isosceles!'
+  
+elsif f_rectangular && !f_isosceles
     puts 'Rectangular!'
-  end
-
-elsif array[0] == array[1] && array[1] != array[2]
-  puts "Isosceles!"
-elsif array[0] == array[1] && array[1] == array[2]
+  
+elsif !f_rectangular && f_isosceles
+  puts 'Not rectangular but isosceles!'
+  
+elsif !f_rectangular && f_equiteral
   puts "Equilateral!"
+  
 else
   puts "Just triangle!"
 end
