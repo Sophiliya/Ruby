@@ -1,7 +1,6 @@
 def maxmin(strings)
-  length = []
-  strings.each { |str| length << str.length }
-  length.min + length.max
+  lengths = strings.map(&:length)
+  lengths.min + lengths.max
 end
 
-puts maxmin(["apple","kiwi","orange","mango","watermelon"])
+puts maxmin(["apple","kiwi","orange","mango","watermelon"]) 
