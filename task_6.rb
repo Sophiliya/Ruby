@@ -1,7 +1,6 @@
-
 def ask(request)
 
-  fail "Incorrect request: not a String!" unless request.is_a?(String)
+  return p "Incorrect request: not a String!" unless request.is_a?(String)
 
   time = Time.now
 
@@ -12,26 +11,26 @@ def ask(request)
   answer =
   case request
   when  'time'
-    then time.strftime("%H:%M")
+    time.strftime("%H:%M")
   when 'date'
-    then time.strftime("%d %B, %y")
+    time.strftime("%d %B, %y")
   when 'day'
-    then time.strftime("%A")
+    time.strftime("%A")
   when 'remaining days'
-    then remaining_days
+    remaining_days
   when 'remaining weeks'
-    then 53 - time.strftime("%V").to_i
-  else 'Wrong request!'
+    53 - time.strftime("%V").to_i
+  else 'Incorrect request!'
   end
 
-  return answer
+  p answer
 
 end
 
-  p ask('time')
-  p ask('date')
-  p ask('day')
-  p ask('remaining days')
-  p ask('remaining weeks')
-  p ask('bla bla')
-  p ask(1234)
+  ask('time')
+  ask('date')
+  ask('day')
+  ask('remaining days')
+  ask('remaining weeks')
+  ask('bla bla')
+  ask(1234)
