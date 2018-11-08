@@ -1,18 +1,14 @@
 class Array
   def square
-    result = []
-
-    self.each { |i| result << i * i }
-
-    result
+    self.map { |i| i * i }
   end
 
   def average
-    f_string = self.inject(0) { |sum, i| i.class == String ? sum += 1 : sum = 0 } > 0
+    is_string = self.map(&:class).include? (String)
 
-    return 0 if f_string
+    return 0 if is_string
 
-    avg = self.inject(0) { |sum, i| sum += i.to_f } / self.count
+    self.inject(:+).to_f / self.length
   end
 
   def even_odd
@@ -20,20 +16,23 @@ class Array
   end
 
   def reverse_strings
-    result = []
+    is_string = self.map(&:class).uniq == [String]
 
-    self.each { |str| result << str.reverse }
+    return 0 unless is_string
 
-    result
+    self.map { |str| str.reverse }
   end
 
 end
 
-num = [1,2,3,4]
+num = [1,2,3,4,5,7]
 str = %w(apple banana carrot dragonfruit)
+num_str = num + str
 
 p num.square
 p num.average
 p str.average
 p num.even_odd
 p str.reverse_strings
+p num.reverse_strings
+p num_str.reverse_strings
