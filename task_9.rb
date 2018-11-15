@@ -7,21 +7,22 @@
 def vend(code, sum)
   item_chosen = $items.find { |item| item[:code] == code  }
 
-  if item_chosen[:quantity] == 0
-    p "#{item_chosen[:name]}: ended."
-    p $items
-  elsif sum == item_chosen[:price]
+  name = item_chosen[:name]
+  price = item_chosen[:price]
+
+  return p "#{name}: ended." if item_chosen[:quantity] == 0
+
+  if sum == price
     p item_chosen[:name]
     item_chosen[:quantity] -= 1
-    p $items
-  elsif sum > item_chosen[:price]
-    p "#{item_chosen[:name]}, change is #{sum - item_chosen[:price]}."
+  elsif sum > price
+    p "#{name}, change is #{sum - price}."
     item_chosen[:quantity] -= 1
-    p $items
-  elsif sum < item_chosen[:price]
-    p "Please add more #{item_chosen[:price] - sum} for #{item_chosen[:name]}."
-    p $items
+  else
+    p "Please add more #{price - sum} for #{name}."
   end
+
+  p $items
 
 end
 
