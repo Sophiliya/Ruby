@@ -1,9 +1,7 @@
 def perform(command, data = [])
-  if block_given?
-    yield(command, data)
-  else
-    p 'Please give me instructions.'
-  end
+  return if command == nil or data.empty?
+  result = block_given? ? yield(command, data) : 'Please give me instructions.'
+  p result 
 end
 
 strings = ['ruby python java scala oracle', 'math physics history']
@@ -11,14 +9,15 @@ numbers = [1,2,3,4,5]
 
 perform('find words', strings) do |command, data|
   sizes = data.map { |s| s.split.size }
-  index = sizes.index(sizes.max)
-  p data[index]
+  data[sizes.index(sizes.max)]
 end
 
 perform('parse numbers', numbers) do |command, data|
   result = {}
-  data.each_with_index { |e, i| result[i + 1] = e }
-  p result
+  data.each.with_index(1) { |e, i| result[i] = e }
+  result
 end
 
-perform('find words',strings) 
+perform('find words',strings)
+
+perform(strings) 
