@@ -55,5 +55,4 @@ class Train
   def detaching
     @wagons_count -= 1 if @speed == 0 && @wagons > 1
   end
-
 end 
