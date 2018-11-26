@@ -10,18 +10,18 @@ class Station
     @trains << train
   end
 
-  def list_of_trains(type)
-    @trains.select { |train| train.type == type }.map(&:number)
+  def trains(type)
+    @trains.select { |train| train.type == type }
   end
 
   def send_train(train)
-    if @trains.include? (train)
-      @trains.delete(train)
-    end
+    @trains.delete(train)
   end
 end
 
 class Route
+  attr_reader :stations
+
   def initialize(start, finish)
     @start = start  # class Station
     @finish = finish
@@ -32,20 +32,12 @@ class Route
     "#{@start.name} - #{@finish.name}"
   end
 
-  def list_of_stations
-    @stations.map { |station| station.name }
-  end
-
-  def stations
-    @stations
-  end
-
   def add_station(station)
     @stations.insert(-2, station)
   end
 
   def delete_station(station)
-    @stations.delete(station) if @stations.include? (station)
+    @stations.delete(station) unless @stations.first == station or @stations.last == station
   end
 end
 
@@ -61,8 +53,8 @@ class Train
     @current_station = nil
   end
 
-  def move(speed)
-    @current_speed = speed if speed.class == Integer
+  def increase_speed
+    @current_speed += 10
   end
 
   def stop
