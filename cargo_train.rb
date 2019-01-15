@@ -1,7 +1,7 @@
 class CargoTrain < Train
   protected
 
-  def attachable?(wagon)
-    @current_speed == 0 && wagon.class == CargoWagon 
+  def able_to_attach?(wagon)
+    @current_speed == 0 && wagon.class == CargoWagon
   end
 end

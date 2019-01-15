@@ -8,7 +8,7 @@ class Route
 
   attr_reader :stations
 
-  def initialize(start, finish) 
+  def initialize(start, finish)
     @start = start
     @finish = finish
     @stations = [@start, @finish]
@@ -20,11 +20,10 @@ class Route
   end
 
   def add_station(station)
-    @stations.insert(-2, station) if type_valid?('Station', station)
+    @stations.insert(-2, station)
   end
 
   def delete_station(station)
-    return if type_valid?('Station', station)
     @stations.delete(station) unless @start == station || @finish == station
   end
 end

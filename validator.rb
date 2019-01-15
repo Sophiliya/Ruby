@@ -1,33 +1,33 @@
 module Validator
   def valid?(name)
-    if name.empty?
-      raise ArgumentError.new('name must not be empty.')
-    else
-      true
-    end
+    name.empty? ? raise : true
+  rescue
+    puts "!!! Exception: argument must not be empty."
   end
 
   def number_valid?(arg)
-    valid?(arg)
+    return unless valid?(arg)
     numbers = (0..9).to_a.map(&:to_s)
-    if arg.each_char.find { |c| numbers.include?(c) == false }
-      raise TypeError.new('argument must be numeric.')
-    else
-      true
-    end
+    arg.each_char.find { |c| numbers.include?(c) == false } ? raise : true
+  rescue
+    puts "!!! Exception: argument must be numeric."
   end
 
   def index_exists?(index, array_length)
     (1..array_length).to_a.include?(index) ? true : raise
-  rescue => e
+  rescue
     puts '!!! Exception: enter the correct index.'
   end
 
-  def exists?(object)
-    if object.empty?
-      raise RuntimeError.new('There is no such object.')
-    else
-      true
-    end
+  def exists?(object_array, object_name)
+    object_array.empty? ? raise : true
+  rescue
+    puts "!!! Exception: #{object_name.capitalize}: there is no such object."
+  end
+
+  def is_enough?(object_array, number, object_name)
+    object_array.count >= number ? true : raise
+  rescue
+    puts "!!! Exception: number of #{object_name} is not enough."
   end
 end

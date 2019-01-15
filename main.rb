@@ -12,7 +12,7 @@ require_relative 'validator'
 class App
   include Validator
 
-  attr_reader :instructions
+  attr_reader :instructions, :routes, :trains
 
   def initialize
     @stations = []
@@ -31,27 +31,27 @@ class App
   def start
     loop do
       show_menu
-      command = take_command
+      user_choice = get_user_choice
 
-      break if command == 11
+      break if user_choice == 11
 
-      index_exists?(command, @instructions.length) ? execute(command) : start
+      index_exists?(user_choice, @instructions.length) ? perform(user_choice) : start
     end
   end
 
-  private
+
 
   def show_menu
     @instructions.each { |k, v| puts "#{k}. #{v}" }
   end
 
-  def take_command
-    puts 'Enter the command:'
+  def get_user_choice
+    puts 'Choose the option:'
     gets.chomp.strip.to_i
   end
 
-  def execute(command)
-    case command
+  def perform(user_choice)
+    case user_choice
       when 1 then create_station
       when 2 then create_train
       when 3 then create_route
@@ -67,18 +67,21 @@ class App
 
   def create_station
     name = get_name('station')
-    @stations << Station.new(name)
+    name ? @stations << Station.new(name) : return
     show_message('station')
   end
 
   def create_train
     number = get_numeric('train', 'number')
-    train_type = get_by_index(@types, 'type')
+    number ? train_type = get_by_index(@types, 'type') : return
 
-    if train_type == 'Cargo'
+    case train_type
+    when 'Cargo'
       @trains << CargoTrain.new(number)
-    else
+    when 'Passenger'
       @trains << PassengerTrain.new(number)
+    else # train_type = false
+      return
     end
 
     show_message('train')
@@ -86,80 +89,87 @@ class App
 
   def create_route
     stations = get_stations
+    return unless stations
     @routes << Route.new(stations.first, stations.last)
     show_message('route')
   end
 
   def get_stations
-    return p 'There are not enough stations.' if @stations.length < 2
-    station_1 = get_by_index(@stations, 'station 1')
-    station_2 = get_by_index(@stations, 'station 2')
-    return p 'Choose different stations.' if station_1 == station_2
-    [ station_1, station_2 ]
+    if is_enough?(@stations, 2, 'stations')
+      station_1 = get_by_index(@stations, 'station 1')
+      station_1 ? station_2 = get_by_index(@stations, 'station 2') : return
+      station_1 && station_2 ? [ station_1, station_2 ] : false
+    else
+      false
+    end
   end
 
   def assign_route
-    return p 'There are no trains or routes.' if @trains.empty? || @routes.empty?
+    return unless exists?(@routes,'route') && exists?(@trains, 'train')
     train = get_by_index(@trains, 'train')
-    route = get_by_index(@routes, 'route')
-    train.assign_route(route)
+    train ? route = get_by_index(@routes, 'route') : return
+    route ? train.assign_route(route) : return
     puts "Route #{route.name} was assigned to the train #{train.number}."
   end
 
   def create_wagon
     wagon_type = get_by_index(@types, 'type')
-    size = get_numeric('wagon', 'size')
-    wagon_type == 'Cargo' ? @wagons << CargoWagon.new(size) : @wagons << PassengerWagon.new(size)
+    wagon_type ? size = get_numeric('wagon', 'size') : return
+    if size && wagon_type == 'Cargo'
+      @wagons << CargoWagon.new(size)
+    elsif size && wagon_type == 'Passenger'
+      @wagons << PassengerWagon.new(size)
+    else
+      return
+    end
     show_message('wagon')
   end
 
   def add_wagon
-    return p 'No trains exist.' if @trains.empty?
-    train = get_by_index(@trains, 'train')
-    wagon_class = train.class == CargoTrain ? CargoWagon : PassengerWagon
+    exists?(@trains, 'train') ? train = get_by_index(@trains, 'train') : return
+    train ? wagon_class = train.class == CargoTrain ? CargoWagon : PassengerWagon : return
 
-    wagons = @wagons.select { |wagon| wagon.class == wagon_class }.uniq
-    wagon = get_by_index(wagons, 'wagon')
+    wagon = get_by_index(@wagons.select { |w| w.class == wagon_class }.uniq, 'wagon')
 
-    train.hitching(wagon)
+    wagon ? train.hitching(wagon) : return
     @wagons.delete(wagon)
-
     puts "Wagon was added to the train #{train.number}."
   end
 
   def detach_wagon
-    return p 'No trains exist.' if @trains.empty?
     trains_with_wagon = @trains.select { |train| train.wagons.length > 0 }
+    return unless exists?(trains_with_wagon, 'train')
     train = get_by_index(trains_with_wagon, 'train')
-    wagon = get_by_index(train.wagons, 'wagon')
-
-    train.detaching(wagon)
+    train ? wagon = get_by_index(train.wagons, 'wagon') : return
+    wagon ? train.detaching(wagon) : return
     @wagons << wagon
     puts "Wagon was detached from the train #{train.number}."
   end
 
   def move_train
-    return p 'No trains exist.' if @trains.empty?
     trains_with_route = @trains.select { |train| train.route != nil }
-    return p 'There are no trains with route.' if trains_with_route.empty?
+    return unless exists?(trains_with_route, 'train with route')
     train = get_by_index(trains_with_route, 'train')
-    train.move_forward if train_movable?(train)
+    train && train_movable?(train) ? train.move_forward : return
     puts "#{train.class} #{train.number} was moved."
   end
 
   def train_movable?(train)
+    return unless train
     current_station_index = train.route.stations.index(train.current_station)
     current_station_index < train.route.stations.length - 1
   end
 
   def trains_at_station
-    return p 'There is no station exists.' if @stations.empty?
+    return unless exists?(@stations, 'station with trains')
     station = get_by_index(@stations, 'station')
 
-    if station.trains.empty?
-      puts "There are no trains at the station #{station.name}."
+    if station && station.trains.count > 0
+      station.trains.each.with_index(1) { |t, i| puts "#{i}. #{t.class} - #{t.number}" }
+    elsif station && station.trains.count == 0
+      puts "No trains at the station #{station.name}"
     else
-      station.trains.each.with_index(1) { |train, index| puts "#{index}. #{train.class} - #{train.number}" }
+      return
     end
   end
 
@@ -179,7 +189,7 @@ class App
     show(object_array, object_name)
     puts "Choose #{object_name} by index:"
     index = gets.chomp.strip.to_i
-    index_exists?(index, object_array.length) ? object_array[index - 1] : start
+    index_exists?(index, object_array.length) ? object_array[index - 1] : false
   end
 
   def show(object_array, object_name)
