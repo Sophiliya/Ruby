@@ -1,0 +1,9 @@
+require_relative 'train'
+
+class PassengerTrain < Train
+  protected
+
+  def able_to_attach?(wagon)
+    @current_speed.zero? && wagon.class == PassengerWagon
+  end
+end
