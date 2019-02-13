@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Trains Control Web App</title>
+  </head>
+  <body>
+    <h3>Trains Control Web App</h3>
+    <h4>Create new train</h4>
+    <form action='train_info' method='post'>
+      <div>
+        <p>Choose type:</p>
+        <input type="radio" name="train_type" value="passenger">
+        <label for="passenger">Passenger</label><br>
+        <input type="radio" name="train_type" value="cargo">
+        <label for="cargo">Cargo</label><br>
+      </div>
+      <div>
+        <label for="train_number">Train number:</label>
+        <input type="text" id="train_number" name="train_number">
+      </div>
+      <br>
+      <input type="submit" value="submit">
+    </form>
+
+    <br>
+    <h4>All trains:</h4>
+    <ul>
+      <% @trains_info.each do |train_info| %>
+        <li><%= train_info %></li>
+      <% end %>
+    </ul>
+
+    <br>
+    <a href="/app">Main</a>
+  </body>
+</html>

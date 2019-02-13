@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Routes Control Web App</title>
+  </head>
+  <body>
+    <h3>Routes Control Web App</h3>
+    <h4>Create new route</h4>
+    <form action='route_info' method='post' id="routeform">
+      <div>
+        <p>Select first station:</p>
+        <select for="station_1" name="station_1" id="routeform">
+          <% @stations.each do |name| %>
+            <option for="station_1" name="station_1"><%= name %></option>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <p>Select last station:</p>
+        <select for="station_2" name="station_2" id="routeform">
+          <% @stations.each do |name| %>
+            <option for="station_2" name="station_2"><%= name %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <br>
+      <input type="submit" value="submit">
+    </form>
+
+    <br>
+    <h4>All routes:</h4>
+    <ul>
+      <% @routes_info.each do |route_info| %>
+        <li><%= route_info %></li>
+      <% end %>
+    </ul>
+
+    <br>
+    <a href="/app">Main</a>
+
+  </body>
+</html>
