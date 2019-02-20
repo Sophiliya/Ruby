@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Stations Control Web App</title>
+  </head>
+  <body>
+    <h3>Stations Control Web App</h3>
+    <h4>Create new station</h4>
+    <form action='stations' method='post'>
+      <div>
+        <label for="name">Station name:</label>
+        <input type="text" id="name" name="name">
+      </div>
+
+      <br>
+      <input type="submit" value="submit">
+    </form>
+
+    <br>
+    <h3>Stations</h3>
+    <table border="1" style="border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stations.each do |station| %>
+          <tr>
+            <td><%= station.id %></td>
+            <td><%= station.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>

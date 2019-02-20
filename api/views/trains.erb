@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Trains Control Web App</title>
+  </head>
+  <body>
+    <h3>Trains Control Web App</h3>
+    <h4>Create new train</h4>
+    <form action='trains' method='post'>
+      <div>
+        <p>Choose type:</p>
+        <input type="radio" name="type" value="passenger">
+        <label for="passenger">Passenger</label><br>
+        <input type="radio" name="type" value="cargo">
+        <label for="cargo">Cargo</label><br>
+      </div>
+      <div>
+        <label for="number">Train number:</label>
+        <input type="text" id="number" name="number">
+      </div>
+      <br>
+      <input type="submit" value="submit">
+    </form>
+
+    <h3>Trains</h3>
+    <table border="1" style="border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @trains.each do |train| %>
+          <tr>
+            <td><%= train.id %></td>
+            <td><%= train.type %></td>
+            <td><a href="/trains/<%= train.id %>"><%= train.number %></a></td>
+            <td>
+              <form action="/trains/<%= train.id %>" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <input type="submit" value="Delete">
+              </form>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>
